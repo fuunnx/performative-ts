@@ -8,7 +8,7 @@
     "dist/**/*"
   ],
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "test-dev": "jest --watch",
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\"",
