@@ -34,9 +34,9 @@ export function runWithFrame<T>(frame: Frame | null, exec: () => T): T {
   }
 }
 
-export function withFrame<T extends unknown[], U>(
+export function withFrame<Args extends unknown[], R = []>(
   frame: Frame | null,
-  func: (...args: T) => U,
-): (...args: T) => U {
-  return (...args: T) => runWithFrame(frame, () => func(...args))
+  func: (...args: Args) => R,
+): (...args: Args) => R {
+  return (...args: Args) => runWithFrame(frame, () => func(...args))
 }

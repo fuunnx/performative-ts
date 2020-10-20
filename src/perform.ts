@@ -26,31 +26,19 @@ export function performSafe<R, Args extends unknown[] = []>(
 const NOT_FOUND = Symbol('HANDLER_NOT_FOUND')
 function resolveHandlerFunction<T extends HandlerFunction>(
   name: EffectName<T>,
-): T | typeof NOT_FOUND
-function resolveHandlerFunction<T extends HandlerFunction>(
-  name: EffectName<T>,
-  defaultValue: T,
-): T
-function resolveHandlerFunction<T extends HandlerFunction>(
-  name: EffectName<T>,
-  defaultValue?: T,
-) {
+): T | typeof NOT_FOUND {
   const origin = captureFrame()
   if ((name as string) in origin.handler) {
-    return withFrame(origin.parent, origin.handler[name as string])
+    return withFrame(origin.parent, origin.handler[name as string]) as T
   }
 
   let current = origin.parent
   while (current) {
     const ctx = current.handler
     if ((name as string) in ctx) {
-      return withFrame(current.parent, ctx[name as string])
+      return withFrame(current.parent, ctx[name as string]) as T
     }
     current = current.parent
-  }
-
-  if (defaultValue !== undefined) {
-    return defaultValue
   }
 
   return NOT_FOUND
