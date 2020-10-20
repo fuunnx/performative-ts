@@ -1,4 +1,9 @@
-export * from './frame'
 export * from './perform'
 export * from './withHandler'
-export { EffectName, Frame, HandlerFunction, Handler } from './types'
+export type {
+  EffectName,
+  KeyableEffectName,
+  HandlerFunction,
+  HandlerTuple,
+  Handler,
+} from './types'
