@@ -10,12 +10,13 @@ test('provides context 1 level deep', () => {
     return {}
   }
   withHandler({ [CTX as symbol]: handlerFunc }, App)()
-  withHandler(CTX, handlerFunc, App)()
+  withHandler([CTX, handlerFunc], App)()
+  withHandler([CTX, handlerFunc], App)()
 })
 
 test('cleans up after execution', () => {
   const handlerFunc = () => 1
-  withHandler(CTX, handlerFunc, () => {})()
+  withHandler([CTX, handlerFunc], () => {})()
   expect(() => perform(CTX)).toThrow()
 })
 

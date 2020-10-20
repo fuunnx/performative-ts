@@ -16,6 +16,7 @@ export type HandlerFunction<R = any, Args extends any[] = any[]> = (
 ) => R
 
 export type Handler = Record<KeyableEffectName, HandlerFunction>
+export type HandlerTuple<T extends HandlerFunction> = [EffectName<T>, T]
 
 export type Frame = {
   parent: Frame | null
