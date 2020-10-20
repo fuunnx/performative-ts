@@ -11,7 +11,6 @@ test('provides context 1 level deep', () => {
   }
   withHandler({ [CTX as symbol]: handlerFunc }, App)()
   withHandler([CTX, handlerFunc], App)()
-  withHandler([CTX, handlerFunc], App)()
 })
 
 test('cleans up after execution', () => {
