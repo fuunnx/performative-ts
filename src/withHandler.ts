@@ -1,9 +1,11 @@
-import { withFrame, useFrame } from './frame'
+import { withFrame, captureFrame } from './frame'
 import type { Handler, HandlerFunction, HandlerTuple } from './types'
+
+type AnyFunction<R, Args extends unknown[] = []> = (...args: Args) => R
 
 export function withHandler<R, Args extends unknown[] = []>(
   handlerObj: Handler,
-  func: (...args: Args) => R,
+  func: AnyFunction<R, Args>,
 ): (...args: Args) => R
 
 export function withHandler<
@@ -12,7 +14,7 @@ export function withHandler<
   Args extends unknown[] = []
 >(
   handlerTuple: HandlerTuple<A>,
-  func: (...args: Args) => R,
+  func: AnyFunction<R, Args>,
 ): (...args: Args) => R
 
 export function withHandler<
@@ -23,7 +25,7 @@ export function withHandler<
 >(
   handlerTupleA: HandlerTuple<A>,
   handlerTupleB: HandlerTuple<B>,
-  func: (...args: Args) => R,
+  func: AnyFunction<R, Args>,
 ): (...args: Args) => R
 
 export function withHandler<
@@ -36,7 +38,7 @@ export function withHandler<
   handlerTupleA: HandlerTuple<A>,
   handlerTupleB: HandlerTuple<B>,
   handlerTupleC: HandlerTuple<C>,
-  func: (...args: Args) => R,
+  func: AnyFunction<R, Args>,
 ): (...args: Args) => R
 
 export function withHandler<
@@ -51,7 +53,7 @@ export function withHandler<
   handlerTupleB: HandlerTuple<B>,
   handlerTupleC: HandlerTuple<C>,
   handlerTupleD: HandlerTuple<D>,
-  func: (...args: Args) => R,
+  func: AnyFunction<R, Args>,
 ): (...args: Args) => R
 
 export function withHandler<
@@ -68,7 +70,7 @@ export function withHandler<
   handlerTupleC: HandlerTuple<C>,
   handlerTupleD: HandlerTuple<D>,
   handlerTupleE: HandlerTuple<E>,
-  func: (...args: Args) => R,
+  func: AnyFunction<R, Args>,
 ): (...args: Args) => R
 
 export function withHandler<
@@ -87,7 +89,7 @@ export function withHandler<
   handlerTupleD: HandlerTuple<D>,
   handlerTupleE: HandlerTuple<E>,
   handlerTupleF: HandlerTuple<F>,
-  func: (...args: Args) => R,
+  func: AnyFunction<R, Args>,
 ): (...args: Args) => R
 
 export function withHandler<
@@ -108,7 +110,7 @@ export function withHandler<
   handlerTupleE: HandlerTuple<E>,
   handlerTupleF: HandlerTuple<F>,
   handlerTupleG: HandlerTuple<G>,
-  func: (...args: Args) => R,
+  func: AnyFunction<R, Args>,
 ): (...args: Args) => R
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -120,8 +122,8 @@ export function withHandler(...args: any[]): any {
   }
 
   // multiple tuples are passed
-  const func: any = args.pop()
-  const tuples: HandlerTuple<any>[] = args
+  const func: AnyFunction<unknown, unknown[]> = args.pop()
+  const tuples: HandlerTuple<HandlerFunction>[] = args
   const handlerObj = tuples.reduce<Handler>((acc, [name, handlerFunc]) => {
     acc[name as string] = handlerFunc
     return acc
