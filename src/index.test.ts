@@ -19,7 +19,7 @@ test('cleans up after execution', () => {
   expect(() => perform(CTX)).toThrow()
 })
 
-test('context can be overriden', () => {
+test('context can be overridden', () => {
   const handlerFunc1 = () => 1
   const handlerFunc2 = () => 2
   const App = () => {
