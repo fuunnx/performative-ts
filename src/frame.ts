@@ -17,7 +17,7 @@ function createFrame(
   return frame
 }
 
-export function useFrame(): Frame {
+export function captureFrame(): Frame {
   return currentFrame
 }
 

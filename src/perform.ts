@@ -1,4 +1,4 @@
-import { useFrame, withFrame } from './frame'
+import { captureFrame, withFrame } from './frame'
 import { EffectName, HandlerFunction } from './types'
 
 export function perform<R, Args extends unknown[] = []>(
@@ -35,7 +35,7 @@ function resolveHandlerFunction<T extends HandlerFunction>(
   name: EffectName<T>,
   defaultValue?: T,
 ) {
-  const origin = useFrame()
+  const origin = captureFrame()
   if ((name as string) in origin.handler) {
     return withFrame(origin.parent, origin.handler[name as string])
   }

@@ -116,7 +116,7 @@ export function withHandler(...args: any[]): any {
   // an object is passed as first argument
   if (args.length === 2 && !Array.isArray(args[0])) {
     const [handlerObj, func] = args
-    return withFrame(useFrame().withHandler(handlerObj), func)
+    return withFrame(captureFrame().withHandler(handlerObj), func)
   }
 
   // multiple tuples are passed
@@ -127,5 +127,5 @@ export function withHandler(...args: any[]): any {
     return acc
   }, {})
 
-  return withFrame(useFrame().withHandler(handlerObj), func)
+  return withFrame(captureFrame().withHandler(handlerObj), func)
 }
