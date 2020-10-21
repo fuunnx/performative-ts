@@ -1,0 +1,17 @@
+{
+  "name": "examples",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel index.html --no-cache"
+  },
+  "browserslist": [
+    "last 2 Chrome versions"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "parcel": "^1.12.4"
+  }
+}

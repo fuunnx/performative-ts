@@ -1,0 +1,6 @@
+- composing is painful
+- wrapping + calling immediately is weird
+- what should be the signification of `withHandler(h1, withHandler(h2, func))` ?
+  - h1 and h2 are in the same scope
+  - or h1 is the parent of h2 ?
+  - the first is simpler, but in this case the latter is more intuitive
