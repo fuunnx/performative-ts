@@ -115,23 +115,7 @@ export function bindHandler<
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function bindHandler(...args: any[]): any {
-  let handlerObj: Handler
-  let func: AnyFunction<unknown, unknown[]>
-
-  if (args.length === 2 && !Array.isArray(args[0])) {
-    // an handler object is given as first argument
-    // eslint-disable-next-line @typescript-eslint/no-extra-semi
-    ;[handlerObj, func] = args
-  } else {
-    // multiple handler tuples are given as arguments
-    func = args.pop()
-
-    const tuples: HandlerTuple<HandlerFunction>[] = args
-    handlerObj = tuples.reduce<Handler>((acc, [name, handlerFunc]) => {
-      acc[name as string] = handlerFunc
-      return acc
-    }, {})
-  }
+  const [handlerObj, func] = guessArgs(args)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (...funcArgs: any[]) =>
@@ -240,23 +224,27 @@ export function withHandler<
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function withHandler(...args: any[]): any {
-  let handlerObj: Handler
-  let func: AnyFunction<unknown, unknown[]>
+  const [handlerObj, func] = guessArgs(args)
 
+  return withFrame(captureFrame().withHandler(handlerObj), func)
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function guessArgs(args: any[]): [Handler, AnyFunction<unknown, unknown[]>] {
   if (args.length === 2 && !Array.isArray(args[0])) {
     // an handler object is given as first argument
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
-    ;[handlerObj, func] = args
+    return args as [Handler, AnyFunction<unknown, unknown[]>]
   } else {
     // multiple handler tuples are given as arguments
-    func = args.pop()
+    const func = args.pop()
 
     const tuples: HandlerTuple<HandlerFunction>[] = args
-    handlerObj = tuples.reduce<Handler>((acc, [name, handlerFunc]) => {
+    const handlerObj = tuples.reduce<Handler>((acc, [name, handlerFunc]) => {
       acc[name as string] = handlerFunc
       return acc
     }, {})
-  }
 
-  return withFrame(captureFrame().withHandler(handlerObj), func)
+    return [handlerObj, func]
+  }
 }
