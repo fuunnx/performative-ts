@@ -33,16 +33,16 @@ function App() {
   return Button({ label: 'Hello' })
 }
 
-const ThemedApp = withHandler(
-  {
-    [getThemeEff]() {
-      return { primaryColor: 'paleblue' }
+console.log(
+  withHandler(
+    {
+      [getThemeEff]() {
+        return { primaryColor: 'paleblue' }
+      },
     },
-  },
-  App,
+    () => App(),
+  ),
 )
-
-console.log(ThemedApp())
 ```
 
 👉 Add a logger:
@@ -76,19 +76,19 @@ function Button({ label }) {
 
 function App() {
   log('rendering App')
-  const ButtonElement = withLogger((info) => log(`[App]: ${info}`), Button)
 
-  return ButtonElement({ label: 'Hello' })
+  return withLogger(
+    (info) => log(`[App]: ${info}`),
+    () => Button({ label: 'Hello' }),
+  )
 }
 
-const run = withLogger((info) => console.log(info), App)
-
-run()
+withLogger((info) => console.log(info), App)
 // rendering Button
 // [App]: rendering App
 ```
 
-## Recipes
+## Best practices
 
 👉 Rename your functions to add meaning:
 
@@ -112,10 +112,39 @@ export function provideTheme(theme, Component) {
 const getThemeEff = Symbol('getThemeEff')
 ```
 
+👉 Compose your handlers
+
+```js
+import { compose } from 'your-favorite-lib'
+import { bindHandler, perform } from 'performative-ts'
+
+function sayName(name) {
+  console.log(`Hello ${name || perform('getName')}`)
+}
+
+const composed = compose(
+  bindHandler(['getName', () => 'John Snow']),
+  bindHandler(['getName', () => perform('getName').toUpperCase()]),
+)(sayName)
+
+composed('Arya') // Hello Arya
+composed() // Hello JOHN SNOW
+```
+
 👉 Capture current frame for later execution
 
 ```js
-const getThemeEff = Symbol('getThemeEff')
+import { captureFrame, bindFrame, withFrame } from 'performative-ts/frame'
+
+const frame = captureFrame()
+
+// later
+const boundListener = bindFrame(frame, listener)
+button.addEventListener('click', boundListener)
+
+setTimeout(() => {
+  withFrame(frame, () => computation())
+}, 1000)
 ```
 
 👉 Use with typescript
@@ -139,3 +168,37 @@ export function provideTheme<C extends Function>(theme: Theme, Component: C): C 
   return withHandler([getThemeEff, () => theme], App)
 }
 ```
+
+## API reference
+
+### perform
+
+`perform(effectName, ...args): effectResult or throws`
+
+`performSafe(effectName, ...args): effectResult | undefined`
+
+### withHandler
+
+`withHandler(handler, computation): computationResult`
+
+`withHandler(...handlerTuples, computation): computationResult`
+
+### bindHandler
+
+`bindHandler(...handler, func): func`
+
+`bindHandler(...handlerTuples, func): func`
+
+### curried bindHandler
+
+`bindHandler(...handler): func => func`
+
+`bindHandler(...handlerTuples): func => func`
+
+### frames
+
+`captureFrame(): currentFrame`
+
+`withFrame(frame, computation): computationResult`
+
+`bindFrame(frame, func): func`
