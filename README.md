@@ -88,6 +88,8 @@ withLogger((info) => console.log(info), App)
 // [App]: rendering App
 ```
 
+See [examples](https://github.com/fuunnx/performative-ts/tree/main/examples) for more
+
 ## Best practices
 
 👉 Rename your functions to add meaning:
