@@ -104,7 +104,7 @@ export function useTheme() {
 }
 
 export function provideTheme(theme, Component) {
-  return withHandler({ [getThemeEff]: () => theme }, App)
+  return withHandler({ [getThemeEff]: () => theme }, Component)
 }
 ```
 
