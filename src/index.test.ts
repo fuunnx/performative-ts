@@ -50,7 +50,20 @@ test('context is preserved for handler execution', () => {
   withHandler({ [CTX as symbol]: () => 1 }, App)
 })
 
-test('composes', () => {
+test('is curried', () => {
+  const main = (x: string) => {
+    expect(perform(CTX)).toEqual(1)
+    return x
+  }
+
+  const binder = bindHandler([CTX, () => 1])
+
+  expect(typeof binder).toEqual('function')
+  expect(typeof binder(main)).toEqual('function')
+  expect(binder(main)('A')).toEqual('A')
+})
+
+test('composes (1)', () => {
   const main = (x: string) => {
     expect(perform(CTX)).toEqual(2)
     return x
@@ -60,6 +73,21 @@ test('composes', () => {
     [CTX, () => 1],
     bindHandler([CTX, () => perform(CTX) * 2], main),
   )
+
+  expect(result('A')).toEqual('A')
+})
+
+test('composes (2)', () => {
+  const compose = (...fns) => (x) => fns.reduceRight((v, f) => f(v), x)
+  const main = (x: string) => {
+    expect(perform(CTX)).toEqual(2)
+    return x
+  }
+
+  const result = compose(
+    bindHandler([CTX, () => 1]),
+    bindHandler([CTX, () => perform(CTX) * 2]),
+  )(main)
 
   expect(result('A')).toEqual('A')
 })

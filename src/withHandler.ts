@@ -113,9 +113,114 @@ export function bindHandler<
   func: AnyFunction<R, Args>,
 ): (...args: Args) => R
 
+export function bindHandler<R, Args extends unknown[] = []>(
+  handlerObj: Handler,
+): (func: AnyFunction<R, Args>) => (...args: Args) => R
+
+export function bindHandler<A extends HandlerFunction>(
+  handlerTuple: HandlerTuple<A>,
+): <R, Args extends unknown[] = []>(
+  func: AnyFunction<R, Args>,
+) => (...args: Args) => R
+
+export function bindHandler<
+  A extends HandlerFunction,
+  B extends HandlerFunction
+>(
+  handlerTupleA: HandlerTuple<A>,
+  handlerTupleB: HandlerTuple<B>,
+): <R, Args extends unknown[] = []>(
+  func: AnyFunction<R, Args>,
+) => (...args: Args) => R
+
+export function bindHandler<
+  A extends HandlerFunction,
+  B extends HandlerFunction,
+  C extends HandlerFunction
+>(
+  handlerTupleA: HandlerTuple<A>,
+  handlerTupleB: HandlerTuple<B>,
+  handlerTupleC: HandlerTuple<C>,
+): <R, Args extends unknown[] = []>(
+  func: AnyFunction<R, Args>,
+) => (...args: Args) => R
+
+export function bindHandler<
+  A extends HandlerFunction,
+  B extends HandlerFunction,
+  C extends HandlerFunction,
+  D extends HandlerFunction
+>(
+  handlerTupleA: HandlerTuple<A>,
+  handlerTupleB: HandlerTuple<B>,
+  handlerTupleC: HandlerTuple<C>,
+  handlerTupleD: HandlerTuple<D>,
+): <R, Args extends unknown[] = []>(
+  func: AnyFunction<R, Args>,
+) => (...args: Args) => R
+
+export function bindHandler<
+  A extends HandlerFunction,
+  B extends HandlerFunction,
+  C extends HandlerFunction,
+  D extends HandlerFunction,
+  E extends HandlerFunction
+>(
+  handlerTupleA: HandlerTuple<A>,
+  handlerTupleB: HandlerTuple<B>,
+  handlerTupleC: HandlerTuple<C>,
+  handlerTupleD: HandlerTuple<D>,
+  handlerTupleE: HandlerTuple<E>,
+): <R, Args extends unknown[] = []>(
+  func: AnyFunction<R, Args>,
+) => (...args: Args) => R
+
+export function bindHandler<
+  A extends HandlerFunction,
+  B extends HandlerFunction,
+  C extends HandlerFunction,
+  D extends HandlerFunction,
+  E extends HandlerFunction,
+  F extends HandlerFunction
+>(
+  handlerTupleA: HandlerTuple<A>,
+  handlerTupleB: HandlerTuple<B>,
+  handlerTupleC: HandlerTuple<C>,
+  handlerTupleD: HandlerTuple<D>,
+  handlerTupleE: HandlerTuple<E>,
+  handlerTupleF: HandlerTuple<F>,
+): <R, Args extends unknown[] = []>(
+  func: AnyFunction<R, Args>,
+) => (...args: Args) => R
+
+export function bindHandler<
+  A extends HandlerFunction,
+  B extends HandlerFunction,
+  C extends HandlerFunction,
+  D extends HandlerFunction,
+  E extends HandlerFunction,
+  F extends HandlerFunction,
+  G extends HandlerFunction
+>(
+  handlerTupleA: HandlerTuple<A>,
+  handlerTupleB: HandlerTuple<B>,
+  handlerTupleC: HandlerTuple<C>,
+  handlerTupleD: HandlerTuple<D>,
+  handlerTupleE: HandlerTuple<E>,
+  handlerTupleF: HandlerTuple<F>,
+  handlerTupleG: HandlerTuple<G>,
+): <R, Args extends unknown[] = []>(
+  func: AnyFunction<R, Args>,
+) => (...args: Args) => R
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function bindHandler(...args: any[]): any {
   const [handlerObj, func] = guessArgs(args)
+
+  if (!func) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return bindHandler.bind(null, handlerObj as any)
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (...funcArgs: any[]) =>
@@ -226,25 +331,38 @@ export function withHandler<
 export function withHandler(...args: any[]): any {
   const [handlerObj, func] = guessArgs(args)
 
+  if (!func) {
+    throw new Error('Please provide a computation as last argument')
+  }
+
   return withFrame(captureFrame().withHandler(handlerObj), func)
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function guessArgs(args: any[]): [Handler, AnyFunction<unknown, unknown[]>] {
-  if (args.length === 2 && !Array.isArray(args[0])) {
-    // an handler object is given as first argument
-    // eslint-disable-next-line @typescript-eslint/no-extra-semi
-    return args as [Handler, AnyFunction<unknown, unknown[]>]
-  } else {
-    // multiple handler tuples are given as arguments
-    const func = args.pop()
+function guessArgs(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  args: any[],
+): [Handler, AnyFunction<unknown, unknown[]> | undefined] {
+  const lastArg = args[args.length - 1]
+  if (typeof lastArg !== 'function') {
+    return [constructHandler(args), undefined]
+  }
 
-    const tuples: HandlerTuple<HandlerFunction>[] = args
-    const handlerObj = tuples.reduce<Handler>((acc, [name, handlerFunc]) => {
+  const func = args.pop()
+  return [constructHandler(args), func]
+}
+
+function constructHandler(
+  tuples: [Handler] | HandlerTuple<HandlerFunction>[],
+): Handler {
+  if (!Array.isArray(tuples[0])) {
+    return tuples[0]
+  }
+
+  return (tuples as HandlerTuple<HandlerFunction>[]).reduce<Handler>(
+    (acc, [name, handlerFunc]) => {
       acc[name as string] = handlerFunc
       return acc
-    }, {})
-
-    return [handlerObj, func]
-  }
+    },
+    {},
+  )
 }
