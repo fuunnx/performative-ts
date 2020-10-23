@@ -187,13 +187,13 @@ export function provideTheme<C extends Function>(theme: Theme, Component: C): C 
 
 ### bindHandler
 
-`bindHandler(...handler, func): func`
+`bindHandler(handler, func): func`
 
 `bindHandler(...handlerTuples, func): func`
 
 ### curried bindHandler
 
-`bindHandler(...handler): func => func`
+`bindHandler(handler): func => func`
 
 `bindHandler(...handlerTuples): func => func`
 
