@@ -28,7 +28,8 @@ function withState(state, computation) {
       return state
     },
   }
-  return () => [state, withHandler(handler, computation)()]
+  const result = withHandler(handler, computation)
+  return [state, result]
 }
 
 function withComputedState(lens, computation) {
@@ -61,7 +62,7 @@ function withLoggedStateChange(computation) {
 // --- userland
 
 export default function main() {
-  return withState(0, () => withLoggedStateChange(sub)())()
+  return withState(0, () => withLoggedStateChange(sub))
 }
 
 const farenheitLens = {
@@ -76,11 +77,10 @@ const farenheitLens = {
 }
 
 function sub() {
-  withLogPrefix('celsius', doTemperatureVariations)()
-  withLogPrefix(
-    'farenheit',
+  withLogPrefix('celsius', doTemperatureVariations)
+  withLogPrefix('farenheit', () =>
     withComputedState(farenheitLens, doTemperatureVariations),
-  )()
+  )
 }
 
 function doTemperatureVariations() {

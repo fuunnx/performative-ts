@@ -8,14 +8,14 @@ export function log(...infos) {
   perform(logEff, ...infos)
 }
 
-export function withLogger(logFunction, wrappedFunc) {
-  return withHandler({ [logEff]: logFunction }, wrappedFunc)
+export function withLogger(logFunction, computation) {
+  return withHandler({ [logEff]: logFunction }, computation)
 }
 
-export function withLogPrefix(prefix, wrappedFunc) {
+export function withLogPrefix(prefix, computation) {
   return withHandler(
     { [logEff]: (...infos) => log(`[${prefix}]`, ...infos) },
-    wrappedFunc,
+    computation,
   )
 }
 
@@ -23,9 +23,8 @@ export function withLogPrefix(prefix, wrappedFunc) {
 
 export default function App() {
   log('rendering App')
-  const ButtonElement = withLogPrefix('App', Button)
 
-  return ButtonElement({ label: 'Hello' })
+  return withLogPrefix('App', () => Button({ label: 'Hello' }))
 }
 
 function Button({ label }) {

@@ -1,4 +1,4 @@
-import { perform, withHandler } from '../src'
+import { bindHandler, perform } from '../src'
 
 // --- library code
 
@@ -9,7 +9,7 @@ function useTheme() {
 }
 
 function provideTheme(theme, Component) {
-  return withHandler({ [getThemeEff]: () => theme }, Component)
+  return bindHandler({ [getThemeEff]: () => theme }, Component)
 }
 
 // --- userland code

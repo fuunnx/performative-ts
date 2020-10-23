@@ -21,22 +21,22 @@ export function captureFrame(): Frame {
   return currentFrame
 }
 
-export function runWithFrame<T>(frame: Frame | null, exec: () => T): T {
+export function withFrame<T>(frame: Frame | null, computation: () => T): T {
   const frameBefore = currentFrame
   if (frame) {
     currentFrame = frame
   }
 
   try {
-    return exec()
+    return computation()
   } finally {
     currentFrame = frameBefore
   }
 }
 
-export function withFrame<Args extends unknown[], R = []>(
+export function bindFrame<Args extends unknown[], R = []>(
   frame: Frame | null,
   func: (...args: Args) => R,
 ): (...args: Args) => R {
-  return (...args: Args) => runWithFrame(frame, () => func(...args))
+  return (...args: Args) => withFrame(frame, () => func(...args))
 }

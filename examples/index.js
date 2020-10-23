@@ -13,10 +13,8 @@ function HTMLLogger(...infos) {
   document.body.appendChild(logEl)
 }
 
-const run = withLogger(HTMLLogger, () => {
-  withLogPrefix('ThemeProvider', () => log('result', themeProviderExample()))()
-  withLogPrefix('State', () => log('result', stateExample()))()
-  withLogPrefix('Logger', () => log('result', loggerExample()))()
+withLogger(HTMLLogger, () => {
+  withLogPrefix('ThemeProvider', () => log('result', themeProviderExample()))
+  withLogPrefix('State', () => log('result', stateExample()))
+  withLogPrefix('Logger', () => log('result', loggerExample()))
 })
-
-run()
