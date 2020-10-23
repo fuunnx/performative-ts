@@ -167,7 +167,7 @@ export function useTheme(): Theme {
 
 export function provideTheme<C extends Function>(theme: Theme, Component: C): C {
   // for better typings with typescript, the library allow to provide handlers as tuples
-  return withHandler([getThemeEff, () => theme], App)
+  return withHandler([getThemeEff, () => theme], Component)
 }
 ```
 
