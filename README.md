@@ -177,30 +177,70 @@ export function provideTheme<C extends Function>(theme: Theme, Component: C): C 
 
 `perform(effectName, ...args): effectResult or throws`
 
+Performs a effect and return its result. Throws if the corresponding effect handler is not declared during its execution.
+
 `performSafe(effectName, ...args): effectResult | undefined`
+
+Performs a effect safely and return its result. Returns `undefined` if the corresponding effect handler is not declared during its execution.
 
 ### withHandler
 
 `withHandler(handler, computation): computationResult`
 
+Calls a computation (a function taking no arguments) with the provided effect handler.
+
 `withHandler(...handlerTuples, computation): computationResult`
+
+Calls a computation (a function taking no arguments) with the provided effect handler functions.
 
 ### bindHandler
 
 `bindHandler(handler, func): func`
 
+Binds an effect handler to the provided function.
+
 `bindHandler(...handlerTuples, func): func`
+
+Binds effect handler functions to the provided function.
 
 ### curried bindHandler
 
 `bindHandler(handler): func => func`
 
+Returns a function that will bind the given effect handler to another function.
+
 `bindHandler(...handlerTuples): func => func`
+
+Returns a function that will bind the given effect handler functions to another function.
 
 ### frames
 
 `captureFrame(): currentFrame`
 
+Captures current execution frame
+
 `withFrame(frame, computation): computationResult`
 
+Calls a computation (a function taking no arguments) with the provided execution frame.
+
 `bindFrame(frame, func): func`
+
+Binds an execution frame to the provided function.
+
+## Types
+
+`EffectName`
+
+An unique effect identifier. Can be a `string`, `number` or `symbol`.
+
+`Handler`
+
+An object consisting of EffectNames as keys and EffectHandlerFunctions as values.
+
+`HandlerTuple`
+
+A tuple consisting of EffectName as first element and EffectHandlerFunction as second element.
+
+`Frame`
+
+An object keeping the reference to its own effect handlers and to its parent frame.
