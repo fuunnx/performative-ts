@@ -1,6 +1,18 @@
-- composing is painful
-- wrapping + calling immediately is weird
-- what should be the signification of `withHandler(h1, withHandler(h2, func))` ?
-  - h1 and h2 are in the same scope
-  - or h1 is the parent of h2 ?
-  - the first is simpler, but in this case the latter is more intuitive
+
+
+- il manque une section "why this lib" dans ton readme, pour expliquer pourquoi cette lib existe, quel problème elle résout.
+
+- exemples: changer très légèrement le nommage pour rendre plus explicite ce que font les morceaux de code: 
+
+```js
+const effectName = 'effectName'
+
+function DynamicallyThemedButtonComponent({ label }) {
+  const theme = perform(effectName)
+
+  return ...
+```
+
+- API reference : explain when each element should be used
+
+- uglify performSafe to explain it's supposed to be library code, for special use cases
