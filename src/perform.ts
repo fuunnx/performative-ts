@@ -12,7 +12,7 @@ export function perform<R, Args extends unknown[] = []>(
   return handler(...args)
 }
 
-export function performSafe<R, Args extends unknown[] = []>(
+export function performAndFailSilently<R, Args extends unknown[] = []>(
   name: EffectName<HandlerFunction<R, Args>>,
   ...args: Args
 ): R | undefined {

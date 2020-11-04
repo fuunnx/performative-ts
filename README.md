@@ -179,7 +179,7 @@ export function provideTheme<C extends Function>(theme: Theme, Component: C): C 
 
 Performs a effect and return its result. Throws if the corresponding effect handler is not declared during its execution.
 
-`performSafe(effectName, ...args): effectResult | undefined`
+`performAndFailSilently(effectName, ...args): effectResult | undefined`
 
 Performs a effect safely and return its result. Returns `undefined` if the corresponding effect handler is not declared during its execution.
 
