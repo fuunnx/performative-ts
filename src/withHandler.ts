@@ -227,15 +227,12 @@ export function bindHandler(...args: any[]): any {
     withFrame(captureFrame().withHandler(handlerObj), () => func(...funcArgs))
 }
 
-export function withHandler<R>(
-  handlerObj: Handler,
-  func: AnyFunction<R, []>,
-): () => R
+export function withHandler<R>(handlerObj: Handler, func: AnyFunction<R, []>): R
 
 export function withHandler<A extends HandlerFunction, R>(
   handlerTuple: HandlerTuple<A>,
   func: AnyFunction<R, []>,
-): () => R
+): R
 
 export function withHandler<
   A extends HandlerFunction,
@@ -245,7 +242,7 @@ export function withHandler<
   handlerTupleA: HandlerTuple<A>,
   handlerTupleB: HandlerTuple<B>,
   func: AnyFunction<R, []>,
-): () => R
+): R
 
 export function withHandler<
   A extends HandlerFunction,
@@ -257,7 +254,7 @@ export function withHandler<
   handlerTupleB: HandlerTuple<B>,
   handlerTupleC: HandlerTuple<C>,
   func: AnyFunction<R, []>,
-): () => R
+): R
 
 export function withHandler<
   A extends HandlerFunction,
@@ -271,7 +268,7 @@ export function withHandler<
   handlerTupleC: HandlerTuple<C>,
   handlerTupleD: HandlerTuple<D>,
   func: AnyFunction<R, []>,
-): () => R
+): R
 
 export function withHandler<
   A extends HandlerFunction,
@@ -287,7 +284,7 @@ export function withHandler<
   handlerTupleD: HandlerTuple<D>,
   handlerTupleE: HandlerTuple<E>,
   func: AnyFunction<R, []>,
-): () => R
+): R
 
 export function withHandler<
   A extends HandlerFunction,
@@ -305,7 +302,7 @@ export function withHandler<
   handlerTupleE: HandlerTuple<E>,
   handlerTupleF: HandlerTuple<F>,
   func: AnyFunction<R, []>,
-): () => R
+): R
 
 export function withHandler<
   A extends HandlerFunction,
@@ -325,7 +322,7 @@ export function withHandler<
   handlerTupleF: HandlerTuple<F>,
   handlerTupleG: HandlerTuple<G>,
   func: AnyFunction<R, []>,
-): () => R
+): R
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function withHandler(...args: any[]): any {
