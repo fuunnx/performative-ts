@@ -1,6 +1,6 @@
 {
   "name": "performative-ts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Algebraic effects inspired, composable, minimalist and typed injection library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
