@@ -78,7 +78,10 @@ test('composes (1)', () => {
 })
 
 test('composes (2)', () => {
-  const compose = (...fns) => (x) => fns.reduceRight((v, f) => f(v), x)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const compose = (...fns: any[]) => (x: any) =>
+    fns.reduceRight((v, f) => f(v), x)
+
   const main = (x: string) => {
     expect(perform(CTX)).toEqual(2)
     return x
