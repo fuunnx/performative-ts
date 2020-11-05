@@ -16,3 +16,5 @@ function DynamicallyThemedButtonComponent({ label }) {
 - API reference : explain when each element should be used
 
 - uglify performSafe to explain it's supposed to be library code, for special use cases
+
+- éviter les computed properties (`[logEff]`) dans les exemples, le code a l'air trop alien sinon
