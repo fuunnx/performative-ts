@@ -94,3 +94,14 @@ test('composes (2)', () => {
 
   expect(result('A')).toEqual('A')
 })
+
+test('bindHandler has the same behavior that withHandler', () => {
+  const main = () => {
+    return perform(CTX)
+  }
+
+  const result = {}
+  expect(withHandler([CTX, () => result], () => main())).toBe(
+    bindHandler([CTX, () => result], main)(),
+  )
+})
