@@ -17,10 +17,8 @@ yarn add performative-ts
 ```js
 import { perform, withHandler } from 'performative-ts'
 
-const getThemeEff = 'getThemeEff'
-
 function Button({ label }) {
-  const theme = perform(getThemeEff)
+  const theme = perform('getTheme')
 
   return `
     <button style="color: ${theme.primaryColor}">
@@ -36,7 +34,7 @@ function App() {
 console.log(
   withHandler(
     {
-      [getThemeEff]() {
+      getTheme() {
         return { primaryColor: 'paleblue' }
       },
     },
@@ -52,14 +50,12 @@ import { perform, withHandler } from 'performative-ts'
 
 // --- library
 
-const logEff = 'logEff'
-
 function log(info) {
-  perform(logEff, info)
+  perform('log', info)
 }
 
 function withLogger(logFunction, wrappedFunc) {
-  return withHandler({ [logEff]: logFunction }, wrappedFunc)
+  return withHandler({ log: logFunction }, wrappedFunc)
 }
 
 // --- userland
@@ -92,26 +88,40 @@ See [examples](https://github.com/fuunnx/performative-ts/tree/main/examples) for
 
 ## Best practices
 
-👉 Rename your functions to add meaning:
+👉 Wrap you `perform`, `bindHandler` and `withHandler` calls into functions to add meaning to your code:
 
 ```js
-import { perform, withHandler } from 'performative-ts'
-
-const getThemeEff = 'getThemeEff'
+import { perform, bindHandler } from 'performative-ts'
 
 export function useTheme() {
-  return perform(getThemeEff)
+  return perform('getTheme')
 }
 
 export function provideTheme(theme, Component) {
-  return withHandler({ [getThemeEff]: () => theme }, Component)
+  return bindHandler({ getTheme: () => theme }, Component)
 }
 ```
 
-👉 Use a symbol to prevent collisions
+👉 Store the effect name in a variable
 
 ```js
-const getThemeEff = Symbol('getThemeEff')
+import { perform, bindHandler } from 'performative-ts'
+
+const getThemeEffectName = 'getTheme'
+
+export function useTheme() {
+  return perform(getThemeEffectName)
+}
+
+export function provideTheme(theme, Component) {
+  return bindHandler({ [getThemeEffectName]: () => theme }, Component)
+}
+```
+
+👉 Use a symbol to prevent naming collisions
+
+```js
+export const getThemeEffectName = Symbol('getThemeEffectName')
 ```
 
 👉 Compose your handlers
@@ -120,17 +130,19 @@ const getThemeEff = Symbol('getThemeEff')
 import { compose } from 'your-favorite-lib'
 import { bindHandler, perform } from 'performative-ts'
 
+const getNameEffect = Symbol('getName')
+
 function sayName(name) {
-  console.log(`Hello ${name || perform('getName')}`)
+  console.log(`Hello ${name || perform(getNameEffect)}`)
 }
 
-const composed = compose(
-  bindHandler(['getName', () => 'John Snow']),
-  bindHandler(['getName', () => perform('getName').toUpperCase()]),
+const bound = compose(
+  bindHandler([getNameEffect, () => 'John Snow']),
+  bindHandler([getNameEffect, () => perform('getName').toUpperCase()]),
 )(sayName)
 
-composed('Arya') // Hello Arya
-composed() // Hello JOHN SNOW
+bound('Arya') // Hello Arya
+bound() // Hello JOHN SNOW
 ```
 
 👉 Capture current frame for later execution
@@ -151,23 +163,38 @@ setTimeout(() => {
 
 👉 Use with typescript
 
-```js
-import { perform, withHandler } from 'performative-ts'
+```ts
+import { perform, bindHandler } from 'performative-ts'
 import type { EffectName } from 'performative-ts'
 
 export type Theme = {
   primaryColor: string
 }
 
-const getThemeEff: EffectName<() => Theme> = Symbol('getThemeEff')
+const getThemeEffect: EffectName<() => Theme> = Symbol('getThemeEff')
 
-export function useTheme(): Theme {
-  return perform(getThemeEff)
+export function useTheme() {
+  return perform(getThemeEffect)
 }
 
 export function provideTheme<C extends Function>(theme: Theme, Component: C): C {
-  // for better typings with typescript, the library allow to provide handlers as tuples
-  return withHandler([getThemeEff, () => theme], Component)
+  // for better typings with typescript, youy can provide handlers as tuples : [EffectName, EffectHandler]
+  return bindHandler([getThemeEffect, () => theme], Component)
+}
+
+
+// ---
+type Flag = 'debug' | 'error'
+type LogFunction = (flag: Flag, value: string) => void
+
+const logEffect: EffectName<LogFunction> = Symbol('log')
+
+export function log(flag: Flag, value: string) {
+  return perform(logEffect, flag, value)
+}
+
+export function provideLogger<C extends Function>(logFunction: LogFunction, Component: C): C {
+  return bindHandler([logEffect, logFunction], Component)
 }
 ```
 
@@ -179,7 +206,7 @@ export function provideTheme<C extends Function>(theme: Theme, Component: C): C 
 
 Performs a effect and return its result. Throws if the corresponding effect handler is not declared during its execution.
 
-`performAndFailSilently(effectName, ...args): effectResult | undefined`
+`performOrFailSilently(effectName, ...args): effectResult | undefined`
 
 Performs a effect safely and return its result. Returns `undefined` if the corresponding effect handler is not declared during its execution.
 
@@ -201,7 +228,7 @@ Binds an effect handler to the provided function.
 
 `bindHandler(...handlerTuples, func): func`
 
-Binds effect handler functions to the provided function.
+Binds effect handlers functions to the provided function.
 
 ### curried bindHandler
 
