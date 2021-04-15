@@ -138,7 +138,7 @@ function sayName(name) {
 
 const bound = compose(
   bindHandler([getNameEffect, () => 'John Snow']),
-  bindHandler([getNameEffect, () => perform('getName').toUpperCase()]),
+  bindHandler([getNameEffect, () => perform(getNameEffect).toUpperCase()]),
 )(sayName)
 
 bound('Arya') // Hello Arya
